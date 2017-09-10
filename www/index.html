@@ -1,0 +1,571 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+  <script src="components/loader.js"></script>
+  <script src="lib/angular/angular.min.js"></script>
+  <script src="lib/onsenui/js/onsenui.min.js"></script>
+  <script src="lib/onsenui/js/angular-onsenui.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/face.js"></script>
+  <link rel="stylesheet" href="components/loader.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <script>
+  
+   var config = {
+    apiKey: "AIzaSyDFsX_51jVjw_cdDaedIxT7RSDchQn1or8",
+    authDomain: "facepay-4ff07.firebaseapp.com",
+    databaseURL: "https://facepay-4ff07.firebaseio.com",
+    projectId: "facepay-4ff07",
+    storageBucket: "facepay-4ff07.appspot.com",
+    messagingSenderId: "90133697217"
+  };
+  firebase.initializeApp(config); 
+  var storageRef = firebase.storage().ref();
+  var voicePage="start";
+    var curr_user="login";
+    var startBtn, stopBtn, hypothesisDiv, phraseDiv, statusDiv, key, languageOptions, formatOptions;
+    var SDK;
+    var recognizer;
+    var previousSubscriptionKey;
+
+    ons.bootstrap()
+      .controller('AppController', function($scope) {
+         
+
+        var item={
+            "icedT":{img:"img/4.png",desc:"Iced Tea",price:"12.00","btc":"0.006613"},
+            "icedcoffee":{img:"img/2.png",desc:"Iced Coffee",price:"13.00","btc":"0.006613"},
+            "caramelfrappe":{img:"img/3.png",desc:"Caramel Frappe",price:"12.00","btc":"0.006613"},
+            "chocolatechipfrappe":{img:"img/1.png",desc:"Mocha Frappe",price:"13.00","btc":"0.006613"},
+            "icedmocha":{img:"img/5.jpg",desc:"Strawberry Frappe",price:"12.00","btc":"0.006613"},
+            "icedtea":{img:"img/4.png",desc:"Iced Tea",price:"12.00","btc":"0.006613"},
+            "icecoffee":{img:"img/2.png",desc:"Iced Coffee",price:"13.00","btc":"0.006613"}
+
+        }
+        
+        $scope.menu=item;
+        
+        
+        var mySer=this;  
+          
+        mySer.load = function(page) {
+          $scope.splitter.content.load(page);
+          $scope.splitter.left.close();
+        };
+
+        this.toggle = function() {
+          $scope.splitter.left.toggle();
+        };
+        this.login=function(){
+            mySer.load('page/0_login.html')
+        }
+        
+        this.signUp=function(){
+            mySer.load('page/1_signup.html')
+        }
+        
+        this.createUser=function(){
+            var email=$("#1_signup_email").val();
+            var password=$("#1_signup_pw").val();
+            firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user){
+                  alert("Successfully Registered "+user.email+". Please login")
+                  mySer.load('page/0_login.html')
+                  setTimeout(function(){$("#0_login_email").val(user.email)},500)
+                  
+            }).catch(function(error) {
+                  var errorCode = error.code;
+                  var errorMessage = error.message;
+                  console.log(error.code+":"+errorMessage)
+            });                        
+        }
+        
+        this.logUserIn=function(){
+            var email=$("#0_login_email").val();
+            var password=$("#0_login_pw").val();            
+            firebase.auth().signInWithEmailAndPassword(email, password).then(function(user) {
+               curr_user=user.uid;
+               //alert("Logged in as merchant: "+user.uid);
+               
+               getPersonIdFromFb()
+               mySer.load('page/5_start.html')
+               
+               setTimeout(function(){
+
+            createBtn = document.getElementById("createBtn");
+            startBtn = document.getElementById("startBtn");
+            stopBtn = document.getElementById("stopBtn");
+            phraseDiv = document.getElementById("phraseDiv");
+            hypothesisDiv = document.getElementById("hypothesisDiv");
+    	
+			key="1cdf5ba8c2d34c4094220957ffd46655";       
+                
+            startBtn.addEventListener("click", function () {
+                if (!recognizer || previousSubscriptionKey != key) {
+                    previousSubscriptionKey = key;
+                    Setup();
+                }
+                hypothesisDiv.innerHTML = "";
+                //phraseDiv.innerHTML = "";
+                RecognizerStart(SDK, recognizer);
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+            });
+            
+            stopBtn.addEventListener("click", function () {
+                RecognizerStop(SDK);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            });
+            
+            
+            Initialize(function (speechSdk) {
+                SDK = speechSdk;
+                startBtn.disabled = false;
+            });
+
+               },1000)
+               
+               
+            }).catch(function(error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+            
+                if (errorCode === 'auth/wrong-password') {
+                    alert('Wrong password.');
+                } else {
+                    alert(errorMessage);         
+                }
+                console.log(error);
+            });            
+        }        
+
+        this.voice=function(){
+            mySer.load('page/2_voice.html')
+
+            
+            setTimeout(function(){
+                
+            createBtn = document.getElementById("createBtn");
+            startBtn = document.getElementById("startBtn");
+            stopBtn = document.getElementById("stopBtn");
+            phraseDiv = document.getElementById("phraseDiv");
+            hypothesisDiv = document.getElementById("hypothesisDiv");
+		
+			key="1cdf5ba8c2d34c4094220957ffd46655";       
+                
+            startBtn.addEventListener("click", function () {
+                if (!recognizer || previousSubscriptionKey != key) {
+                    previousSubscriptionKey = key;
+                    Setup();
+                }
+                hypothesisDiv.innerHTML = "";
+                //phraseDiv.innerHTML = "";
+                RecognizerStart(SDK, recognizer);
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+            });
+            
+            stopBtn.addEventListener("click", function () {
+                RecognizerStop(SDK);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            });
+            
+            
+            Initialize(function (speechSdk) {
+                SDK = speechSdk;
+                startBtn.disabled = false;
+            });
+            
+            },300)
+        }
+        
+        this.face=function(){
+            mySer.load('page/3_face.html')
+            var dis;
+            if(curr_user){
+                dis=false
+            }else{
+                dis=true
+            }
+            setTimeout(function(){$("#faceStartBtn").prop('disabled',dis)},250)
+        }
+
+        this.pay=function(){
+            mySer.load('page/4_pay.html')
+        }
+        this.start=function(){
+            
+            voicePage="start"
+            mySer.load('page/5_start.html')
+               setTimeout(function(){
+
+            createBtn = document.getElementById("createBtn");
+            startBtn = document.getElementById("startBtn");
+            stopBtn = document.getElementById("stopBtn");
+            phraseDiv = document.getElementById("phraseDiv");
+            hypothesisDiv = document.getElementById("hypothesisDiv");
+        
+			key="1cdf5ba8c2d34c4094220957ffd46655";       
+                
+            startBtn.addEventListener("click", function () {
+                if (!recognizer || previousSubscriptionKey != key) {
+                    previousSubscriptionKey = key;
+                    Setup();
+                }
+                hypothesisDiv.innerHTML = "";
+                //phraseDiv.innerHTML = "";
+                RecognizerStart(SDK, recognizer);
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+            });
+            
+            stopBtn.addEventListener("click", function () {
+                RecognizerStop(SDK);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            });
+            
+            
+            Initialize(function (speechSdk) {
+                SDK = speechSdk;
+                startBtn.disabled = false;
+            });
+
+               },1000)
+
+}
+        this.buy=function(key){
+            voicePage="pay"
+            //console.log(key)
+           
+            item[key]["btc"]=Number(item[key]["price"])*0.00005102397;
+            $scope.item_info=item[key];
+            try{$scope.$apply()}catch(err){}
+             mySer.load('page/4_pay.html') 
+            setTimeout(function(){
+                
+                     createBtn = document.getElementById("createBtn");
+            startBtn = document.getElementById("startBtn");
+            stopBtn = document.getElementById("stopBtn");
+            phraseDiv = document.getElementById("phraseDiv");
+            hypothesisDiv = document.getElementById("hypothesisDiv");
+        
+            key="1cdf5ba8c2d34c4094220957ffd46655";       
+                
+            startBtn.addEventListener("click", function () {
+                if (!recognizer || previousSubscriptionKey != key) {
+                    previousSubscriptionKey = key;
+                    Setup();
+                }
+                hypothesisDiv.innerHTML = "";
+                //phraseDiv.innerHTML = "";
+                RecognizerStart(SDK, recognizer);
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+            });
+            
+            stopBtn.addEventListener("click", function () {
+                RecognizerStop(SDK);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            });
+            
+            
+            Initialize(function (speechSdk) {
+                SDK = speechSdk;
+                startBtn.disabled = false;
+            });   
+            },1000)  
+        }        
+        $scope.buy=function(key){
+            
+            console.log(key)
+            key.replace("please","")
+            
+            if(item[key]){
+
+            $scope.item_info=item[key]
+            $scope.$apply()
+
+mySer.load('page/4_pay.html')
+            voicePage="pay";
+            
+            setTimeout(function(){
+                
+                     createBtn = document.getElementById("createBtn");
+            startBtn = document.getElementById("startBtn");
+            stopBtn = document.getElementById("stopBtn");
+            phraseDiv = document.getElementById("phraseDiv");
+            hypothesisDiv = document.getElementById("hypothesisDiv");
+        
+        	key="1cdf5ba8c2d34c4094220957ffd46655";       
+                
+            startBtn.addEventListener("click", function () {
+                if (!recognizer || previousSubscriptionKey != key) {
+                    previousSubscriptionKey = key;
+                    Setup();
+                }
+                hypothesisDiv.innerHTML = "";
+                //phraseDiv.innerHTML = "";
+                RecognizerStart(SDK, recognizer);
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+            });
+            
+            stopBtn.addEventListener("click", function () {
+                RecognizerStop(SDK);
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            });
+            
+            
+            Initialize(function (speechSdk) {
+                SDK = speechSdk;
+                startBtn.disabled = false;
+            });   
+            },1000)            
+            }
+        }
+        
+        this.newFacePay=function(){
+            mySer.load('page/6_facepay.html')
+            getPictureFromCamera('identify')
+        }
+        
+        $scope.useFacePay=function(){
+            mySer.load('page/6_facepay.html')
+            getPictureFromCamera('identify')
+        }    
+        
+        this.acceptPayment=function(){
+            $("#progress").show()
+            setTimeout(function(){
+                mySer.load('page/7_accept.html').then(function(){
+                    
+                })
+            },3000)            
+
+        
+        }
+        $scope.acceptPayment=function(){
+            $("#progress").show()
+            setTimeout(function(){
+                mySer.load('page/7_accept.html').then(function(){
+                    
+                })
+            },3000)       
+        }        
+
+      })
+
+    ons.ready(function() {
+        console.log("Onsen UI is ready!");
+        
+            try{
+        ons.disableDeviceBackButtonHandler();
+        }catch(err){}    
+        
+    });
+  </script>
+  
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>    
+
+    <script>
+        // Special handling to let the sample work when loaded directly from file system.
+        if (window.location.protocol == "file:") {
+            document.write('\<script src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js">\<\/script>');
+        }
+    </script>
+
+    <!-- SDK USAGE -->
+	<script src="js/speech.js"></script>
+    <script>
+		var speech_result;
+        // On doument load resolve the SDK dependecy
+        function Initialize(onComplete) {
+            require(["Speech.Browser.Sdk"], function(SDK) {
+                onComplete(SDK);
+            });
+        }
+        
+        // Setup the recongizer
+        function RecognizerSetup(SDK, recognitionMode, language, format, subscriptionKey) {
+            var recognizerConfig = new SDK.RecognizerConfig(
+                new SDK.SpeechConfig(
+                    new SDK.Context(
+                        new SDK.OS(navigator.userAgent, "Browser", null),
+                        new SDK.Device("SpeechSample", "SpeechSample", "1.0.00000"))),
+                recognitionMode, // SDK.RecognitionMode.Interactive  (Options - Interactive/Conversation/Dictation>)
+                language, // Supported laguages are specific to each recognition mode. Refer to docs.
+                format); // SDK.SpeechResultFormat.Simple (Options - Simple/Detailed)
+            // Alternatively use SDK.CognitiveTokenAuthentication(fetchCallback, fetchOnExpiryCallback) for token auth
+            var authentication = new SDK.CognitiveSubscriptionKeyAuthentication(subscriptionKey);
+            return SDK.CreateRecognizer(recognizerConfig, authentication);
+        }
+        // Start the recognition
+        function RecognizerStart(SDK, recognizer) {
+            recognizer.Recognize((event) => {
+                /*
+                 Alternative syntax for typescript devs.
+                 if (event instanceof SDK.RecognitionTriggeredEvent)
+                */
+                switch (event.Name) {
+                    case "RecognitionTriggeredEvent" :
+                        UpdateStatus("Initializing");
+                        break;
+                    case "ListeningStartedEvent" :
+                        UpdateStatus("Listening");
+                        break;
+                    case "RecognitionStartedEvent" :
+                        UpdateStatus("Listening_Recognizing");
+                        break;
+                    case "SpeechStartDetectedEvent" :
+                        UpdateStatus("Listening_DetectedSpeech_Recognizing");
+                        //console.log(JSON.stringify(event.Result)); // check console for other information in result
+                        break;
+                    case "SpeechHypothesisEvent" :
+                        UpdateRecognizedHypothesis(event.Result.Text);
+                        //console.log(JSON.stringify(event.Result)); // check console for other information in result
+                        break;
+                    case "SpeechEndDetectedEvent" :
+                        OnSpeechEndDetected();
+                        UpdateStatus("Processing_Adding_Final_Touches");
+                        //console.log(JSON.stringify(event.Result)); // check console for other information in result
+                        break;
+                    case "SpeechSimplePhraseEvent" :
+                        UpdateRecognizedPhrase(JSON.stringify(event.Result, null, 3));
+                        break;
+                    case "SpeechDetailedPhraseEvent" :
+                        UpdateRecognizedPhrase(JSON.stringify(event.Result, null, 3));
+                        break;
+                    case "RecognitionEndedEvent" :
+                        OnComplete();
+                        console.log(speech_result)
+						UpdateStatus("Idle");
+                        //console.log(JSON.stringify(event)); // Debug information
+						
+                        break;
+                }
+            })
+            .On(() => {
+                // The request succeeded. Nothing to do here.
+            },
+            (error) => {
+                console.error(error);
+            });
+        }
+        // Stop the Recognition.
+        function RecognizerStop(SDK, recognizer) {
+            // recognizer.AudioSource.Detach(audioNodeId) can be also used here. (audioNodeId is part of ListeningStartedEvent)
+            recognizer.AudioSource.TurnOff();
+        }
+    </script>
+
+    <!-- Browser Hooks -->
+    <script>
+        /*var startBtn, stopBtn, hypothesisDiv, phraseDiv, statusDiv, key, languageOptions, formatOptions;
+        var SDK;
+        var recognizer;
+        var previousSubscriptionKey;
+
+            createBtn = document.getElementById("createBtn");
+            startBtn = document.getElementById("startBtn");
+            stopBtn = document.getElementById("stopBtn");
+            phraseDiv = document.getElementById("phraseDiv");
+            hypothesisDiv = document.getElementById("hypothesisDiv");
+            //statusDiv = document.getElementById("statusDiv");
+			
+			key="1cdf5ba8c2d34c4094220957ffd46655";
+            //key = document.getElementById("key");
+            //languageOptions = document.getElementById("languageOptions");
+            //formatOptions = document.getElementById("formatOptions");
+            /*languageOptions.addEventListener("change", function () {
+                Setup();
+            });
+            
+            formatOptions.addEventListener("change", function () {
+                Setup();
+            });*/
+        function Setup() {
+        //recognizer = RecognizerSetup(SDK, SDK.RecognitionMode.Interactive, languageOptions.value, SDK.SpeechResultFormat[formatOptions.value], key);
+		recognizer = RecognizerSetup(SDK,SDK.RecognitionMode.Interactive,"en-US",SDK.SpeechResultFormat["Simple"],key);
+		}
+        function UpdateStatus(status) {
+            //statusDiv.innerHTML = status;
+			//console.log(status)
+        }
+        function UpdateRecognizedHypothesis(text) {
+            hypothesisDiv.innerHTML = text;
+			speech_result=text
+        }
+        function OnSpeechEndDetected() {
+            stopBtn.disabled = true;
+            //do something with speech_result
+            //alert(speech_result.replace(/ /g,''))    
+            if(voicePage=="start"){
+            speech_result=speech_result.replace("please",'')
+            angular.element(document.getElementById('AppControl')).scope().buy(speech_result.replace(/ /g,'')); 
+            }else if(voicePage=="pay"){
+                if(speech_result.indexOf("proceed")>=0||speech_result.indexOf("next")>=0){
+                angular.element(document.getElementById('AppControl')).scope().useFacePay();     
+                }
+            }
+            
+        }
+        function UpdateRecognizedPhrase(json) {
+            //phraseDiv.innerHTML = json;
+			//console.log(json)
+        }
+        function OnComplete() {
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+        }
+    </script>  
+  
+</head>
+<body>
+
+  <ons-splitter id="AppControl" ng-controller="AppController as app" var="splitter">
+    <ons-splitter-side side="left" width="220px" collapse swipeable>
+      <ons-page>
+        <ons-list>
+          <ons-list-item ng-click="app.signUp()" tappable>
+            Sign Up 
+          </ons-list-item>        
+          <ons-list-item ng-click="app.login()" tappable>
+            Login
+          </ons-list-item>        
+
+          <ons-list-item ng-click="app.voice()" tappable>
+            Set Voice
+          </ons-list-item>
+          <ons-list-item ng-click="app.face()" tappable>
+            Enroll Face
+          </ons-list-item>
+          <ons-list-item ng-click="app.start()" tappable>
+            Listing
+          </ons-list-item>              
+          <ons-list-item ng-click="app.pay()" tappable>
+            Pay
+          </ons-list-item>
+
+          <ons-list-item ng-click="app.acceptPayment()" tappable>
+            Accept
+          </ons-list-item>           
+        </ons-list>
+      </ons-page>
+    </ons-splitter-side>
+    <ons-splitter-content page="page/0_login.html"></ons-splitter-content>
+  </ons-splitter>
+
+</body>
+</html>

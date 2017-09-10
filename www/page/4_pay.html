@@ -1,0 +1,35 @@
+   
+ <ons-page modifier="bg">
+        <ons-toolbar style="background-color:#3498db;">
+       <div class="left">
+            <ons-toolbar-button style="color:white" ng-click="app.start()" class="text-lato"><i class="fa fa-arrow-left"></i></ons-toolbar-button>
+        </div>
+          
+          <div class="center text-lato" style="color:white;text-align:center;">
+            Pay Now
+        </div>
+        <div class="right">
+            <ons-toolbar-button id="startBtn"><i style="color:#3498db;" class="fa fa-microphone"></i></ons-toolbar-button>
+        </div>
+        </ons-toolbar>
+        </br>
+    <div style="width:100%;height:60%;background-size:contain;background-position:center center;background-repeat:no-repeat;background-image:url({{item_info.img}})">
+    </div>
+
+  
+    <div class="item-title">
+        <span class="text-bebas">        <span style="font-weight:700;font-size: 28px;">{{item_info.desc}}</span></br>
+        RM {{item_info.price}}    </br>  BTC {{item_info.btc}} </span>       
+    </div>
+
+ 
+    <div style="width:80%;padding:10%;opacity:0"> 
+                <ons-button style="background-color:#3498db;" ng-click="app.newFacePay()" modifier="large" class="text-lato">Pay with FacePay</ons-button>
+                </br></br>
+
+    </div>        
+<!--<ons-button modifier="large" id="startBtn" disabled="disabled">Start</ons-button>-->
+    <ons-button class="offscreen" modifier="large" id="stopBtn" disabled="disabled">Stop</ons-button>
+    </br><span id="hypothesisDiv" style="float:left;width:90%;margin-left:10%;height:3%;"></span>
+
+</ons-page>

@@ -1,0 +1,18 @@
+ <ons-page>
+        <ons-toolbar>
+          <div class="center">
+            Enroll Face
+        </div>
+        </ons-toolbar>
+        
+    <div style="width:80%;padding:10%"> 
+        
+                <ons-button onclick="getPictureFromCamera('regPerson')" modifier="large" id="faceStartBtn" disabled="disabled">Start</ons-button>
+                </br>
+    </div>        
+    
+                    <ons-button onclick="trainModel()" modifier="large">Train Model</ons-button>
+                </br>   
+    
+    <img id="face_img"></img>
+</ons-page>

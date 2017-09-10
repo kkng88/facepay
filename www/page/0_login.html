@@ -1,0 +1,36 @@
+  <ons-page modifier="login">
+<img src="img/logo.png" style="width:80%;margin-left:10%;position:absolute;z-index:9999;top:40%"/>
+<video style="width:100%;position:absolute;" autoplay>
+      <source src="img/facepay.mp4" type="video/mp4">
+</video>
+
+      <div class="login-form">
+        <br><br></br>
+        
+        <ons-button modifier="large" class="login-button text-lato" ng-click="app.logUserIn()" style="background-color:#3498db;display:flex;align-items:center;justify-content:center;height:45px">
+        <i class="fa fa-facebook-square" style="font-size:2em;margin-right:15px" aria-hidden="true"></i>Log in with Facebook</ons-button>
+        <br>
+        <ons-button modifier="quiet" class="forgot-password text-lato" style="color:#fff;text-overflow:inherit;font-size:10px;line-height:10px;white-space:inherit;" ng-click="app.pricing()">By logging in, you accept the terms and conditions of service</ons-button>
+      </div>
+
+        <input type="email" id="0_login_email" class="text-input--underbar offscreen" placeholder="Email" value="kkng_882000@hotmail.com">
+        <input type="password" id="0_login_pw" class="text-input--underbar offscreen" placeholder="Password" value="Abcd1234">
+        
+
+    </ons-page>
+
+<!--    <ons-page>
+      <ons-toolbar>
+        <div class="center">Merchant Login</div>
+        <!--<div class="right"><ons-toolbar-button>Close</ons-toolbar-button></div>
+      </ons-toolbar>
+
+      <div class="login-form">
+        <input type="email" id="0_login_email" class="text-input--underbar" placeholder="Email" value="kkng_882000@hotmail.com">
+        <input type="password" id="0_login_pw" class="text-input--underbar" placeholder="Password" value="Abcd1234">
+        <br><br>
+        <ons-button ng-click="app.logUserIn()" modifier="large" class="login-button">Login</ons-button>
+        <br><br>
+      </div>
+
+    </ons-page>-->

@@ -1,0 +1,40 @@
+   
+ <ons-page modifier="login">
+        <ons-toolbar style="background-color:#3498db;">
+       <div class="left">
+            <ons-toolbar-button style="color:white" ng-click="app.start()" class="text-lato"><i class="fa fa-arrow-left"></i></ons-toolbar-button>
+        </div>
+          
+          <div class="center text-lato" style="color:white;text-align:center;">
+            Processing Payment
+        </div>
+        <div class="right">
+           <ons-toolbar-button style="color:#3498db;">Back</ons-toolbar-button>
+        </div>
+        </ons-toolbar>
+        
+<div id="progress" style="display:none;width:40%;margin-left:37.5%;position:absolute;top:23%">
+<svg class="progress-circular">
+  <circle class="progress-circular__primary" cx="50%" cy="50%" r="40%" fill="none" stroke-width="10%" stroke-miterlimit="10"/>
+</svg>
+</div>
+        
+        <img id="sourceImage" style="width:100%;height:auto;" alt="" />
+        <canvas id="canvas" width="500" height="500" style="margin-left:-70px; position:absolute;top:0px;"></canvas>
+
+        <div id="gray-out" style="display:none;position:absolute;top:0px;height:100%;width:100%;background-color:rgba(0,0,0,0.7)">
+                  <div id="phrase" style="border-radius:10px;padding:20px;margin:10% 0 0 15%;position:absolute;top:0;width:60%;background-color:rgba(0,0,0,0.5);color:white">
+                      Hello KK, read this phrase to proceed: </br></br><span style="font-size:28px;font-weight:300">My name is unknown to you</span>
+                  </div>
+                  
+                  <canvas class="visualizer" width="360" height="100" style="position:absolute;bottom:112px"></canvas> 
+        </div>   
+
+        <div id="face-res-cont" style="width:100%;color:white;text-align:center;height:56px;background-color:#3498db;position:fixed;bottom:56px">
+                </br>1. Facial Scan:<span id="face-pay-noti"> Scanning Face...</span>
+        </div>
+        <div id="voice-res-cont" style="width:100%;color:white;text-align:center;height:56px;background-color:gray;position:fixed;bottom:0px">
+                </br>2. Voice Scan:<span id="voice-pay-noti"> Not Started</span></br>
+        </div>            
+    
+</ons-page>

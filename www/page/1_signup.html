@@ -1,0 +1,20 @@
+    <ons-page>
+      <ons-toolbar>
+        <div class="center">Create User</div>
+        <!--<div class="right"><ons-toolbar-button>Close</ons-toolbar-button></div>-->
+      </ons-toolbar>
+
+      <div class="login-form">
+        <input type="email" id="1_signup_email" class="text-input--underbar" placeholder="Email" value="">
+        <input type="password" id="1_signup_pw" class="text-input--underbar" placeholder="Password" value="">
+       
+        <br><br>
+        <ons-button ng-click="app.createUser()" modifier="large" class="login-button">Create Firebase User</ons-button>
+        <br><br>
+        <ons-button onclick="createPerson()" modifier="large" class="login-button">Create Person</ons-button>
+        
+      </div>
+
+
+
+    </ons-page>

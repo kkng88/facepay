@@ -1,0 +1,39 @@
+   
+ <ons-page modifier="login">
+        <ons-toolbar style="background-color:#3498db;">
+       <div class="left">
+            <ons-toolbar-button style="color:white" ng-click="app.start()" class="text-lato"><i class="fa fa-arrow-left"></i></ons-toolbar-button>
+        </div>
+          
+          <div class="center text-lato" style="color:white;text-align:center;">
+            Payment Status
+        </div>
+        <div class="right">
+            <!--<ons-toolbar-button><i style="color:black" class="fa fa-microphone"></i></ons-toolbar-button>-->
+            <ons-toolbar-button style="color:#3498db;">Back</ons-toolbar-button>
+        </div>
+        </ons-toolbar>
+        
+<!--<img src="img/tick.png" style="width:80%;margin:10%"alt="" />-->
+
+<iframe width="100%" height="360" src="https://lottiefiles.com/iframe/433-checked-done" frameborder="0" allowfullscreen></iframe>
+<div id="progress" style="width:40%;margin-left:37.5%;position:absolute;top:23%;opacity:0">
+<svg class="progress-circular">
+  <circle class="progress-circular__primary" cx="50%" cy="50%" r="40%" fill="none" stroke-width="10%" stroke-miterlimit="10"/>
+</svg>
+</div>
+
+        <div class="item-title" style="text-align:center">
+        <span class="text-bebas">
+        Payment Successful    
+        </div>
+        <div class="item-title" style="text-align:center">
+        <span class="text-lato">
+        Your {{item_info.desc}} will </br>fly to you in a minute!
+            <!--
+        </span></br>
+        RM {{item_info.price}}    </br>  BTC {{item_info.btc}} </span>-->     
+        </div>        
+  
+        
+</ons-page>

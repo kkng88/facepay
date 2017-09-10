@@ -1,0 +1,49 @@
+<ons-page modifier="bg">
+    <ons-toolbar style="background-color:#3498db;">
+        <div class="left">
+            <ons-toolbar-button><i style="color:rgba(0,0,0,0)" class="fa fa-microphone"></i></ons-toolbar-button>
+        </div>
+        <div class="center text-lato" style="color:white;text-align:center">
+            <span>Select Your Drink</span> 
+        </div>
+        <div class="right">
+            <ons-toolbar-button id="startBtn"><i style="color:#3498db;" class="fa fa-microphone"></i></ons-toolbar-button>
+        </div>
+        
+    </ons-toolbar>
+    
+                <!--<ons-button modifier="large" id="startBtn" disabled="disabled">Start</ons-button>-->
+                <ons-button class="offscreen" modifier="large" id="stopBtn" disabled="disabled">Stop</ons-button>
+    </br><span id="hypothesisDiv" style="float:left;width:90%;margin-left:10%;height:3%;"></span>
+
+    
+    <div class="star-cont" ng-repeat="(key,i) in menu" ng-click="app.buy(key)">
+        <div class="star-item">
+            <div class="star-img" style="background-image:url({{i.img}})" id="{{key}}">
+            </div>
+            <div class="star-desc truncate">
+                {{i.desc}}
+            </div>
+            <div class="star-price">
+                RM{{i.price}}
+            </div>
+        </div>
+    </div>
+    
+    <!--</br>
+    <div class="friend-container">
+        <div class="friend-cont" ng-repeat="(key,i) in menu" ng-click="app.buy(key)">
+            <div class="star-item">
+                <div class="f-img" style="background-image:url({{i.img}})" id="{{key}}">
+                </div>
+                <div class="f-name truncate">
+                    {{i.desc}}
+                </div>
+                <div class="f-desc">
+                    RM{{i.price}}
+                </div>
+            </div>
+        </div>
+    </div>-->
+    
+</ons-page>
